@@ -1,11 +1,11 @@
-import React, {useState} from 'react';
+import React, { useState, useEffect } from 'react';
 import styled from 'styled-components';
 import axios from 'axios';
 
-const AddArticle = () => {
+const EditArticle = props => {
     const [title, setTitle] = useState('');
     const [article, setArticle] = useState('');
-    const [authorname, setAuthorname] = useState('');
+    const [authorname, setAuthorName] = useState('');
     const [message, setMessage] = useState('');
 
     const changeOnClick = e => {
@@ -19,28 +19,40 @@ const AddArticle = () => {
 
         setTitle('');
         setArticle('');
-        setAuthorname('');
+        setAuthorName('');
 
-        axios
-            .post('/articles/add', articles)
+        axios.put(`/articles/update/${props.match.params.id}`, articles)
             .then(res => setMessage(res.data))
             .catch(err => {
                 console.log(err);
-            });
-    };
+            })
+    }
+
+    useEffect(() => {
+        axios
+            .get(`/articles/${props.match.params.id}`)
+            .then(res=> [
+                setTitle(res.data.title),
+                setArticle(res.data.article),
+                setAuthorName(res.data.authorname)
+            ])
+            .catch(error => console.log(error))
+    }, []);
+
+
 
     return (
         <AddArticleContainer>
         <div className='container'>
-            <h1>Add New Article</h1>
+            <h1>Update Article</h1>
             <span className='message'>{message}</span>
-            <form onSubmit={changeOnClick} encType='multipart/form-data'>
+        <form onSubmit={changeOnClick} encType='multipart/form-data'>
             <div className="form-group">
                 <label htmlFor="authorname">Author Name</label>
                 <input 
                     type="text" 
                     value={authorname}
-                    onChange={e => setAuthorname(e.target.value)}
+                    onChange={e => setAuthorName(e.target.value)}
                     className="form-control" 
                     placeholder="Author Name" 
                 />
@@ -65,7 +77,7 @@ const AddArticle = () => {
                 ></textarea>
             </div>
             <button type="submit" className="btn btn-primary">
-                Post Article
+                Update Article
             </button>
         </form>
         </div>
@@ -73,7 +85,7 @@ const AddArticle = () => {
     )
 }
 
-export default AddArticle;
+export default EditArticle;
 
 //main container
 

@@ -1,5 +1,5 @@
 import React, {useState, useEffect} from 'react';
-import {Route} from 'react-router-dom';
+import { Route } from 'react-router-dom';
 import axios from 'axios';
 import './App.css';
 import 'bootstrap/dist/css/bootstrap.min.css';
@@ -8,7 +8,7 @@ import Navbar from './components/layouts/Navbar';
 import Footer from './components/layouts/Footer';
 import Articles from './components/layouts/Articles';
 import Article from './components/layouts/Article';
-
+import EditArticle from './components/layouts/EditArticle';
 import AddArticle from './components/layouts/AddArticle';
 
 
@@ -29,7 +29,11 @@ function App() {
       <Route exact path='/' render={() => <Articles posts={posts} />} />
       <Route 
         path='/article/:id' 
-        render={(props) => <Article {...props} posts={posts} />} 
+        render={props => <Article {...props} posts={posts} />} 
+      />
+      <Route 
+        path='/update/:id' 
+        render={props => <EditArticle {...props} posts={posts} />} 
       />
       <Route path='/add-article' component={AddArticle} />
 

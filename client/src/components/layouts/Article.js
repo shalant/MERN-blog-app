@@ -2,6 +2,7 @@ import React, {useState, useEffect} from 'react';
 import styled from 'styled-components';
 import axios from 'axios';
 import spinner from '../../spinner.gif'
+import {Link} from 'react-router-dom';
 
 const Article = props => {
     const [title, setTitle] = useState('')
@@ -20,9 +21,19 @@ const Article = props => {
 
     return (
         <MainContainer>
-            <h2>{title}</h2>
-            <p>{article}</p>
-            <p>{authorname}</p>
+            {!title || !article || !authorname ? (
+                <img src={spinner} alt='loading...' />
+            ) : (
+                <>
+                <h2>{title}</h2>
+                <p>{article}</p>
+                <p className='badge badge-secondary'>{authorname}</p>
+                <br/>
+                <Link to='/'  type="submit" className="btn btn-primary">
+                    Back to Home
+                </Link>
+                </>
+            )}
         </MainContainer>
     )
 }
@@ -38,6 +49,19 @@ const MainContainer = styled.div`
         text-align: center;
         font-weight: 900;
         color: var(--dark-green)
+    }
 
+    img {
+        width: 1.5rem;
+        display: block;
+        margin: auto;
+    }
+
+    .btn-primary {
+        background: var(--dark-green);
+        border: none;
+        &:hover {
+            background: var(--light-green)
+        }
     }
 `;
