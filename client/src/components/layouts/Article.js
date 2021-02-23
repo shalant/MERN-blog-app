@@ -8,40 +8,42 @@ const Article = props => {
     const [title, setTitle] = useState('')
     const [article, setArticle] = useState('')
     const [authorname, setAuthorName] = useState('')
+    const [fileName, setFileName] = useState('');
 
     useEffect(() => {
-        axios.get(`/articles/${props.match.params.id}`)
-            .then(res=> [
-                setTitle(res.data.title),
-                setArticle(res.data.article),
-                setAuthorName(res.data.authorname)
+        axios
+            .get(`/articles/${props.match.params.id}`)
+            .then((response) => [
+                setAuthorName(response.data.authorname),
+                setTitle(response.data.title),
+                setArticle(response.data.article),
+                setFileName(response.data.articleImage)
             ])
-            .catch(error => console.log(error))
-    }, [props]);
+            .catch(error => console.log(error));
+    }, []);
 
     return (
-        <MainContainer>
-            {!title || !article || !authorname ? (
-                <img src={spinner} alt='loading...' />
-            ) : (
-                <>
+        <ArticleContainer>
+            <>
+                <img src={`/uploads/${fileName}`} alt="..." 
+                    style={{margin: '0 auto', width: '40%', display: 'flex'}} />
                 <h2>{title}</h2>
                 <p>{article}</p>
                 <p className='badge badge-secondary'>{authorname}</p>
                 <br/>
-                <Link to='/'  type="submit" className="btn btn-primary">
+                <Link to='/' type="submit" className="btn btn-primary">
                     Back to Home
                 </Link>
-                </>
+            </>
             )}
-        </MainContainer>
+        </ArticleContainer>
     )
 }
 
 export default Article;
 
 //main container
-const MainContainer = styled.div`
+const ArticleContainer = styled.div`
     margin: 6rem auto;
     padding: 3rem 14rem;
 

@@ -16,15 +16,15 @@ const Articles = ({ posts }) => {
 
     return (
         <MainContainer>
-            {!posts.length ? (
-                <img src={spinner} alt='loading...' />
-            ) : (
-                posts.map((article, key) => (
+            {posts.map((article, key) => (
                 <div className='container' key={key} >
-                    <Link to={{
+                    <img src={`/uploads/${article.articleImage}`} alt='...' style={{width: '40%'}} />
+                    <Link 
+                        to={{
                         pathname: `/article/${article._id}`
-                    }}>
-                    <h2>{article.title}</h2>
+                        }}
+                    >
+                        <h2>{article.title}</h2>
                     </Link>
                     
                     <p>{article.article}</p>
@@ -47,7 +47,7 @@ const Articles = ({ posts }) => {
                         </div>
                     </div>
                 </div>
-            )))}
+            ))}
         </MainContainer>
     )
 }

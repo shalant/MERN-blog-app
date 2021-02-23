@@ -2,86 +2,101 @@ import React, { useState, useEffect } from 'react';
 import styled from 'styled-components';
 import axios from 'axios';
 
-const EditArticle = props => {
+const EditArticle = (props) => {
     const [title, setTitle] = useState('');
     const [article, setArticle] = useState('');
     const [authorname, setAuthorName] = useState('');
     const [message, setMessage] = useState('');
+    const [fileName, setFileName] = useState('');
 
-    const changeOnClick = e => {
+
+    const onChangeFile = (e) => {
+        setFileName(e.target.files[0]);
+    };
+
+    const changeOnClick = (e) => {
         e.preventDefault();
 
-        const articles = {
-            title,
-            article,
-            authorname
-        };
+    const formData = new FormData();
 
-        setTitle('');
-        setArticle('');
-        setAuthorName('');
-
-        axios.put(`/articles/update/${props.match.params.id}`, articles)
-            .then(res => setMessage(res.data))
-            .catch(err => {
-                console.log(err);
-            })
-    }
+    formData.append('title', title);
+    formData.append('article', article);
+    formData.append('authorname', authorname);
+    formData.append('articleImage', fileName);
+    
+    axios
+        .put(`/articles/update/${props.match.params.id}`, formData)
+        .then((res) => setMessage(res.data))
+        .catch((err) => {
+            console.log(err);
+        });
+    };
 
     useEffect(() => {
         axios
             .get(`/articles/${props.match.params.id}`)
-            .then(res=> [
+            .then((res)=> [
                 setTitle(res.data.title),
                 setArticle(res.data.article),
-                setAuthorName(res.data.authorname)
+                setAuthorName(res.data.authorname),
+                setFileName(res.data.articleImage)
             ])
-            .catch(error => console.log(error))
-    }, []);
-
-
+            .catch((err) => {
+                console.log(err);
+            });
+    }, [`${props.match.params.id}`]);
 
     return (
-        <AddArticleContainer>
-        <div className='container'>
-            <h1>Update Article</h1>
-            <span className='message'>{message}</span>
-        <form onSubmit={changeOnClick} encType='multipart/form-data'>
-            <div className="form-group">
-                <label htmlFor="authorname">Author Name</label>
-                <input 
-                    type="text" 
-                    value={authorname}
-                    onChange={e => setAuthorName(e.target.value)}
-                    className="form-control" 
-                    placeholder="Author Name" 
-                />
+        <EditArticleContainer>
+            <div className='container'>
+                <h1>Edit Article</h1>
+                <span className='message'>{message}</span>
+            <form onSubmit={changeOnClick} encType='multipart/form-data'>
+                <div className="form-group">
+                    <label htmlFor="authorname">Author Name</label>
+                    <input 
+                        type="text" 
+                        value={authorname}
+                        onChange={e => setAuthorName(e.target.value)}
+                        className="form-control" 
+                        placeholder="Author Name" 
+                    />
+                </div>
+                <div className="form-group">
+                    <label htmlFor="title">Title</label>
+                    <input 
+                        type="text"
+                        value={title} 
+                        onChange={e => setTitle(e.target.value)}
+                        className="form-control" 
+                        placeholder="Title" 
+                    />
+                </div>
+                <div className="form-group">
+                    <label htmlFor="article">Article</label>
+                    <textarea
+                        value={article}
+                        onChange={e => setArticle(e.target.value)}
+                        className="form-control" 
+                        rows="3"
+                    ></textarea>
+                </div>
+                <div className='form-group'>
+                    <label htmlFor='file'>Choose article image</label>
+                    <input 
+                        type='file' 
+                        fileName='articeImage' 
+                        className='form-control-file'
+                        onChange={onChangeFile}
+                    />
+                </div>
+
+                <button type="submit" className="btn btn-primary">
+                    Update Article
+                </button>
+            </form>
             </div>
-            <div className="form-group">
-                <label htmlFor="title">Title</label>
-                <input 
-                    type="text"
-                    value={title} 
-                    onChange={e => setTitle(e.target.value)}
-                    className="form-control" 
-                    placeholder="Title" 
-                />
-            </div>
-            <div className="form-group">
-                <label htmlFor="article">Article</label>
-                <textarea
-                    value={article}
-                    onChange={e => setArticle(e.target.value)}
-                    className="form-control" 
-                    rows="3"
-                ></textarea>
-            </div>
-            <button type="submit" className="btn btn-primary">
-                Update Article
-            </button>
-        </form>
-        </div>
-        </AddArticleContainer>
+        </EditArticleContainer>
     )
 }
 
@@ -89,7 +104,7 @@ export default EditArticle;
 
 //main container
 
-const AddArticleContainer = styled.div`
+const EditArticleContainer = styled.div`
     margin: 3rem auto;
     padding: 4rem;
     width: 31.25rem;

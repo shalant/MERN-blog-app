@@ -7,22 +7,29 @@ const AddArticle = () => {
     const [article, setArticle] = useState('');
     const [authorname, setAuthorname] = useState('');
     const [message, setMessage] = useState('');
+    const [fileName, setFileName] = useState('');
+
+    const onChangeFile = e => {
+        setFileName(e.target.files[0]);
+    };
 
     const changeOnClick = e => {
         e.preventDefault();
 
-        const articles = {
-            title,
-            article,
-            authorname
-        };
+    const formData = new FormData();
+
+    formData.append('title', title);
+    formData.append('article', article);
+    formData.append('authorname', authorname);
+    formData.append('articleImage', fileName);
+
 
         setTitle('');
         setArticle('');
         setAuthorname('');
 
         axios
-            .post('/articles/add', articles)
+            .post('/articles/add', formData)
             .then(res => setMessage(res.data))
             .catch(err => {
                 console.log(err);
@@ -63,6 +70,15 @@ const AddArticle = () => {
                     className="form-control" 
                     rows="3"
                 ></textarea>
+            </div>
+            <div className='form-group'>
+                <label htmlFor='file'>Choose article image</label>
+                <input 
+                    type='file' 
+                    fileName='articeImage' 
+                    className='form-control-file'
+                    onChange={onChangeFile}
+                />
             </div>
             <button type="submit" className="btn btn-primary">
                 Post Article
